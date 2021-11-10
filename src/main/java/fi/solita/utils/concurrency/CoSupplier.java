@@ -9,8 +9,9 @@ public abstract class CoSupplier<OUT> extends Coroutine<Void,OUT> implements Sup
         super(name);
     }
     
-    public void start() throws AlreadyStartedException {
+    public CoSupplier<OUT> start() throws AlreadyStartedException {
         doStart(null);
+        return this;
     }
     
     public void yield_(OUT out) {

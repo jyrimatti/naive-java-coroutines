@@ -7,6 +7,11 @@ import java.util.concurrent.TimeUnit;
 class NaiveAsyncTimer {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     
+    public <T> T block() {
+        sleep(Long.MAX_VALUE, TimeUnit.DAYS);
+        return null;
+    }
+    
     public void sleep(long duration, TimeUnit unit) {
         CoRunnable sleeper = new CoRunnable("Sleeper") {
             @Override

@@ -9,8 +9,9 @@ public abstract class CoConsumer<IN> extends Coroutine<IN,Void> implements Consu
         super(name);
     }
     
-    public void start(IN in) throws AlreadyStartedException {
+    public CoConsumer<IN> start(IN in) throws AlreadyStartedException {
         doStart(in);
+        return this;
     }
     
     public IN yield_() {

@@ -1,11 +1,11 @@
 package fi.solita.utils.concurrency;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -289,5 +289,30 @@ public class CoroutineTest {
             assertEquals("C", function.resume('c'));
             assertEquals("C", function.join());
         }).join();
+    }
+    
+    Generator<String> fetch() {
+        return new Generator<String>() {
+            public String get() {
+                Generator<String> self = this;
+                Executors.newSingleThreadExecutor().execute(() -> Coroutine.start(() -> self.yield_("hello")));
+                return scheduler.block();
+            }
+        }.start();
+    }
+    
+    @Test
+    public void testAsyncFetch() {
+        List<String> data = new ArrayList<>();
+        Coroutine.start(() -> {
+            Generator<String> content1 = fetch();
+            Generator<String> content2 = fetch();
+            CoSupplier<Boolean> a = Coroutine.start(() -> data.add(content1.resume()));
+            CoSupplier<Boolean> b = Coroutine.start(() -> data.add(content2.resume()));
+            a.join();
+            b.join();
+        }).join();
+        
+        assertEquals(List.of("hello","hello"), data);
     }
 }

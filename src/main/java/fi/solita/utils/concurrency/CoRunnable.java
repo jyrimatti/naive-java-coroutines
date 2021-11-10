@@ -7,8 +7,9 @@ public abstract class CoRunnable extends Coroutine<Void,Void> implements Runnabl
         super(name);
     }
     
-    public void start() throws AlreadyStartedException {
+    public CoRunnable start() throws AlreadyStartedException {
         doStart(null);
+        return this;
     }
     
     public void yield_() {

@@ -9,8 +9,9 @@ public abstract class CoFunction<IN,OUT> extends Coroutine<IN,OUT> implements Fu
         super(name);
     }
     
-    public void start(IN in) throws AlreadyStartedException {
+    public CoFunction<IN,OUT> start(IN in) throws AlreadyStartedException {
         doStart(in);
+        return this;
     }
     
     public IN yield_(OUT out) {
